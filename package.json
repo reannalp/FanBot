@@ -1,0 +1,27 @@
+{
+  "name": "fanbot",
+  "version": "1.0.0",
+  "description": "Discord bot built for use in fandom communities on Discord.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reannalp/FanBot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/reannalp/FanBot/issues"
+  },
+  "homepage": "https://github.com/reannalp/FanBot#readme",
+  "dependencies": {
+    "discord.js": "^12.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1"
+  }
+}
