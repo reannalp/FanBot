@@ -1,26 +1,37 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+/* eslint-disable no-restricted-syntax */
+const fs = require('fs');
 const Discord = require('discord.js');
-const config = require('./config.json');
+const { prefix, token } = require('./config.json');
 
 const client = new Discord.Client();
+client.commands = new Discord.Collection();
+const commandFiles = fs.readdirSync('./commands').filter((file) => file.endsWith('.js'));
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+for (const file of commandFiles) {
+  const command = require(`./commands/${file}`);
+  client.commands.set(command.name, command);
+}
+
+client.once('ready', () => {
+  console.log('Ready!');
 });
 
 client.on('message', (message) => {
-  if (message.author.bot) return;
-  const args = message.content.split(/ +/g);
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
+
+  const args = message.content.slice(prefix.length).split(/ +/);
   const command = args.shift().toLowerCase();
-  if (command === 'ping') {
-    message.channel.send('...').then((msg) => {
-      const latency = msg.createdTimestamp / 1000 - message.createdTimestamp / 1000;
-      msg.edit(`Latency: ${latency.toFixed(3)} seconds\nAPI Latency: ${Math.round(client.ws.ping) / 1000} seconds`);
-    });
-  }
-  if (command === 'say') {
-    message.channel.send(args.join(' '));
-    message.delete();
+
+  if (!client.commands.has(command)) return;
+
+  try {
+    client.commands.get(command).execute(client, message, args);
+  } catch (error) {
+    console.error(error);
+    message.reply('there was an error trying to execute that command!');
   }
 });
 
-client.login(config.token);
+client.login(token);
