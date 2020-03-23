@@ -1,2 +1,2 @@
 # FanBot
-Discord bot built for use in fandom communities on Discord.
+Discord bot framework built for use in fan based communities.
