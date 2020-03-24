@@ -3,7 +3,7 @@ module.exports = {
   description: '',
   args: true,
   usage: '@mention',
-  execute(message) {
+  execute(client, message, args) {
     if (!message.mentions.users.size) {
       return message.channel.send(`Your avatar: <${message.author.displayAvatarURL({ format: 'png', dynamic: true })}>`);
     }

@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 module.exports = {
   name: 'serverinfo',
   description: 'Information about server.',
-  execute(message) {
+  execute(client, message, args) {
     const embed = new Discord.MessageEmbed()
       .setDescription(`${message.guild.name} Information`)
       .setThumbnail(message.guild.iconURL())
