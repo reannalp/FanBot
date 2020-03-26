@@ -1,6 +1,7 @@
 module.exports = {
   name: 'ping',
   description: 'Ping!',
+  cooldown: 10,
   execute(client, message, args) {
     message.channel.send('...').then((msg) => {
       const latency = msg.createdTimestamp / 1000 - message.createdTimestamp / 1000;
