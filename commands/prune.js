@@ -2,7 +2,7 @@
 //   name: 'prune',
 //   description: 'Prune user messages',
 //   args: true,
-//   execute(message, args) {
+//   execute(client, message, args) {
 //     const amount = parseInt(args[0], 10) + 1;
 
 //     if (isNaN(amount)) {
