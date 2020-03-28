@@ -19,8 +19,9 @@
       "no-console": 0,
       "consistent-return": 0,
       "no-unused-vars": 0,
-      "no-dynamic-require": 0,
+      "import/no-dynamic-require": 0,
       "global-require": 0,
-      "max-len": 0
+      "max-len": 0,
+      "no-restricted-syntax": 0
     }
 }
