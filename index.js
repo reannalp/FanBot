@@ -1,6 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable global-require */
-/* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const Discord = require('discord.js');
 const { prefix, token } = require('./config.json');
@@ -18,18 +15,23 @@ for (const file of commandFiles) {
 fs.readdir('./events/', (err, files) => {
   if (err) return console.error(err);
   files.forEach((file) => {
-    const eventFunction = require(`./events/${file}`);
-    if (eventFunction.disabled) return;
+    if (!file.endsWith('.js'));
+    const evt = require(`./events/${file}`);
+    const evtName = file.split('.')[0];
+    console.log(`Loaded ${evtName}`);
+    client.on(evtName, evt.bind(null, client));
+    // const eventFunction = require(`./events/${file}`);
+    // if (eventFunction.disabled) return;
 
-    const event = eventFunction.event || file.split('.')[0];
-    const emitter = (typeof eventFunction.emitter === 'string' ? client[eventFunction.emitter] : eventFunction.emitter) || client;
-    const { once } = eventFunction;
+    // const event = eventFunction.event || file.split('.')[0];
+    // const emitter = (typeof eventFunction.emitter === 'string' ? client[eventFunction.emitter] : eventFunction.emitter) || client;
+    // const { once } = eventFunction;
 
-    try {
-      emitter[once ? 'once' : 'on'](event, (...args) => eventFunction.execute(...args));
-    } catch (error) {
-      console.error(error.stack);
-    }
+    // try {
+    //   emitter[once ? 'once' : 'on'](event, (...args) => eventFunction.execute(...args));
+    // } catch (error) {
+    //   console.error(error.stack);
+    // }
   });
 });
 
