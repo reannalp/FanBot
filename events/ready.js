@@ -1,7 +1,3 @@
-module.exports = {
-  name: 'ready',
-  once: 'once',
-  execute() {
-    console.log('Ready!');
-  },
+module.exports = (client) => {
+  console.log('Ready');
 };
