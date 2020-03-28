@@ -1,6 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable global-require */
-/* eslint-disable no-restricted-syntax */
 const fs = require('fs');
 const Discord = require('discord.js');
 const { prefix, token } = require('./config.json');
@@ -15,8 +12,15 @@ for (const file of commandFiles) {
   client.commands.set(command.name, command);
 }
 
-client.once('ready', () => {
-  console.log('Ready!');
+fs.readdir('./events/', (err, files) => {
+  if (err) return console.error(err);
+  files.forEach((file) => {
+    if (!file.endsWith('.js'));
+    const evt = require(`./events/${file}`);
+    const evtName = file.split('.')[0];
+    console.log(`Loaded ${evtName}`);
+    client.on(evtName, evt.bind(null, client));
+  });
 });
 
 client.on('message', (message) => {
