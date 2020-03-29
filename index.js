@@ -17,11 +17,7 @@ fs.readdir('./events/', (err, files) => {
     if (!file.endsWith('.js'));
     const evt = require(`./events/${file}`);
     const evtName = file.split('.')[0];
-    try {
-      client.on(evtName, evt.bind(null, client));
-    } catch (error) {
-      console.error(error);
-    }
+    client.on(evtName, evt.bind(null, client));
   });
 });
 
