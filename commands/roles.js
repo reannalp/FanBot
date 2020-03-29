@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 module.exports = {
   name: 'roles',
   description: '',
+  cooldown: 30,
   async execute(client, message, args) {
     const embed = new Discord.MessageEmbed()
       .setTitle('Roles')
