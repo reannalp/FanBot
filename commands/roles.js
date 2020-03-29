@@ -7,6 +7,7 @@ module.exports = {
   async execute(client, message, args) {
   //    create embed
     const embed = new Discord.MessageEmbed()
+      .setTitle('Roles')
       .setDescription('Lorem ipsum');
     //    send embed
     const sent = await message.channel.send({ embed });
@@ -14,7 +15,8 @@ module.exports = {
     //    log message id
     console.log(id);
     // react to created message with emoji representing each assignable role
-    sent.react('👍').then(() => sent.react('👎'));
+    sent.react('403412254562713600');// .then(() => sent.react('👎'));
+    // listen for reactions on message
   },
 };
 

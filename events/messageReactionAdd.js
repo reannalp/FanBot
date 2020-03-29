@@ -1,8 +1,7 @@
-const Discord = require('discord.js');
-
 module.exports = (client, reaction, user) => {
-  const embed = new Discord.MessageEmbed()
-    .setColor('#9cff00')
-    .setDescription(`${user.username} reacted to [message](${reaction.message.url}) with ${reaction.emoji}`);
-  client.channels.cache.get('506280692775256090').send({ embed });
+  if (!user.bot && reaction.message.embeds[0].title === 'Roles' && reaction.emoji.id === '403412254562713600') {
+    const addRole = reaction.message.guild.roles.cache.find((cb) => cb.name === 'Artist');
+    reaction.message.guild.members.cache.get(user.id).roles.add(addRole)
+      .then(reaction.message.channel.send(`Added ${addRole.toString()} role to ${user.username}`));
+  }
 };
