@@ -3,6 +3,6 @@ module.exports = (client, reaction, user) => {
     const remRole = reaction.message.guild.roles.cache.find((cb) => cb.name === 'Artist');
     reaction.message.guild.members.cache.get(user.id).roles.remove(remRole)
       .then(reaction.message.channel.send(`Removed ${remRole.toString()} role from ${user.username}`))
-      .catch((err) => console.error(err));
+      .catch(console.error);
   }
 };
