@@ -59,15 +59,31 @@ client.on('message', async (message) => {
       const splitArgs = commandArgs.split(' ');
       const workID = splitArgs.shift();
 
+      // fetch
+      const axios = require('axios');
+      const cheerio = require('cheerio');
+      const fetchData = async () => {
+        const result = await axios.get(`https://archiveofourown.org/works/${workID}`);
+        return cheerio.load(result.data);
+      };
+      const $ = await fetchData();
+      const workTitle = $('.preface > .title').text().trim();
+      const workAuthor = $('.preface > .byline').text().trim();
+      const wordCount = $('.stats > dd.words').text().trim();
+      const workSummary = $('.summary > .userstuff').text().trim();
+      console.log(`${workTitle} by ${workAuthor}\nWords: ${wordCount}\n Summary: ${workSummary}`);
+      message.channel.send(`${workTitle} by ${workAuthor}\nWords: ${wordCount}\n Summary: ${workSummary}`);
+      //
+
       try {
         const rec = await Recs.create({
           workid: workID,
-          // title: workTitle,
-          // author: workAuthor,
-          // wordcount: wordCount,
-          // summary: workSummary,
+          title: workTitle,
+          author: workAuthor,
+          wordcount: wordCount,
+          summary: workSummary,
           // comments: comments/tags,
-          recby: message.author.tag,
+          recby: message.author.id,
           // recdate: datetime added
         });
         return message.reply(`https://archiveofourown.org/works/${workID} added.`);
@@ -89,7 +105,24 @@ client.on('message', async (message) => {
       //! updates/edits info of specific rec by workID
       const splitArgs = commandArgs.split(' ');
       const workID = splitArgs.shift();
-      const affectedRows = await Recs.update({ workid: workID }, { where: { workid: workID } });
+
+      // fetch
+      const axios = require('axios');
+      const cheerio = require('cheerio');
+      const fetchData = async () => {
+        const result = await axios.get(`https://archiveofourown.org/works/${workID}`);
+        return cheerio.load(result.data);
+      };
+      const $ = await fetchData();
+      const workTitle = $('.preface > .title').text().trim();
+      const workAuthor = $('.preface > .byline').text().trim();
+      const wordCount = $('.stats > dd.words').text().trim();
+      const workSummary = $('.summary > .userstuff').text().trim();
+      // end fetch
+
+      const affectedRows = await Recs.update({
+        title: workTitle, author: workAuthor, wordcount: wordCount, summary: workSummary,
+      }, { where: { workid: workID } });
       if (affectedRows > 0) {
         return message.reply(`Rec ${workID} was updated.`);
       }
