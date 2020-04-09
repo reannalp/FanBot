@@ -96,6 +96,11 @@ client.on('message', async (message) => {
       return message.reply(`Could not find a rec with ID ${workID}.`);
     } else if (command === 'removerec') {
       // delete specfic rec by workID
+      const workID = commandArgs;
+      const rowCount = await Recs.destroy({ where: { workid: workID } });
+      if (!rowCount) return message.reply('There is no rec with that ID');
+
+      return message.reply(`Rec of ${workID} deleted.`);
     }
   }
 });
