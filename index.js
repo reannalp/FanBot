@@ -38,10 +38,13 @@ const Recs = sequelize.define('recs', {
   },
   title: Sequelize.STRING,
   author: Sequelize.STRING,
+  authorURL: Sequelize.STRING,
   wordcount: Sequelize.INTEGER,
+  warnings: Sequelize.STRING,
+  rating: Sequelize.STRING,
+  freeformtags: Sequelize.TEXT,
   summary: Sequelize.TEXT,
   comments: Sequelize.TEXT,
-  freeformtags: Sequelize.TEXT,
   recby: Sequelize.STRING,
   recdate: Sequelize.DATE,
 });
@@ -70,17 +73,18 @@ client.on('message', async (message) => {
       const $ = await fetchData();
       const workTitle = $('.preface > .title').text().trim();
       const workAuthor = $('.preface > .byline').text().trim();
+      const workAuthorURL = $('.byline > a').attr('href');
       const wordCount = $('.stats > dd.words').text().trim();
       const workSummary = $('.summary > .userstuff').text().trim();
       const freeformTagsList = $('.freeform > .commas').contents().children();
       const freeformTags = Array.from(freeformTagsList).map((e) => e.children[0].data.toString()).join(', ');
-      const warningsList = $('.warning > .commas').contents().children();
-      const warnings = Array.from(warningsList).map((e) => e.children[0].data.toString()).join(', ');
-      const ratingList = $('.rating > .commas').contents().children();
-      const rating = Array.from(ratingList).map((e) => e.children[0].data.toString()).join(', ');
+      const workWarningsList = $('.warning > .commas').contents().children();
+      const workWarnings = Array.from(workWarningsList).map((e) => e.children[0].data.toString()).join(', ');
+      const workRatingList = $('.rating > .commas').contents().children();
+      const workRating = Array.from(workRatingList).map((e) => e.children[0].data.toString()).join(', ');
       //! Move the following log/send down to successful add so it doesn't send on duplicate.
-      console.log(`${workTitle} by ${workAuthor}\nWords: ${wordCount}\nRating: ${rating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
-      message.channel.send(`**${workTitle}** by *${workAuthor}*\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${rating}\n**Warnings:** ${warnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
+      console.log(`${workTitle} by ${workAuthor}${workAuthorURL}\nWords: ${wordCount}\nRating: ${workRating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
+      message.channel.send(`**${workTitle}** by *${workAuthor}* <https://archiveofourown.org${workAuthorURL}>\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${workRating}\n**Warnings:** ${workWarnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
       //
 
       try {
@@ -88,9 +92,13 @@ client.on('message', async (message) => {
           workid: workID,
           title: workTitle,
           author: workAuthor,
+          authorURL: workAuthorURL,
           wordcount: wordCount,
+          warnings: workWarnings,
+          rating: workRating,
           summary: workSummary,
           // comments: comments/tags,
+          //! Need to figure out accepting two arguments. WorkID and Comments and throw errors properly for both.
           freeformtags: freeformTags,
           recby: message.author.id,
           // recdate: datetime added
