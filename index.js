@@ -41,6 +41,7 @@ const Recs = sequelize.define('recs', {
   wordcount: Sequelize.INTEGER,
   summary: Sequelize.TEXT,
   comments: Sequelize.TEXT,
+  freeformtags: Sequelize.TEXT,
   recby: Sequelize.STRING,
   recdate: Sequelize.DATE,
 });
@@ -71,8 +72,15 @@ client.on('message', async (message) => {
       const workAuthor = $('.preface > .byline').text().trim();
       const wordCount = $('.stats > dd.words').text().trim();
       const workSummary = $('.summary > .userstuff').text().trim();
-      console.log(`${workTitle} by ${workAuthor}\nWords: ${wordCount}\n Summary: ${workSummary}`);
-      message.channel.send(`${workTitle} by ${workAuthor}\nWords: ${wordCount}\n Summary: ${workSummary}`);
+      const freeformTagsList = $('.freeform > .commas').contents().children();
+      const freeformTags = Array.from(freeformTagsList).map((e) => e.children[0].data.toString()).join(', ');
+      const warningsList = $('.warning > .commas').contents().children();
+      const warnings = Array.from(warningsList).map((e) => e.children[0].data.toString()).join(', ');
+      const ratingList = $('.rating > .commas').contents().children();
+      const rating = Array.from(ratingList).map((e) => e.children[0].data.toString()).join(', ');
+      //! Move the following log/send down to successful add so it doesn't send on duplicate.
+      console.log(`${workTitle} by ${workAuthor}\nWords: ${wordCount}\nRating: ${rating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
+      message.channel.send(`**${workTitle}** by *${workAuthor}*\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${rating}\n**Warnings:** ${warnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
       //
 
       try {
@@ -83,6 +91,7 @@ client.on('message', async (message) => {
           wordcount: wordCount,
           summary: workSummary,
           // comments: comments/tags,
+          freeformtags: freeformTags,
           recby: message.author.id,
           // recdate: datetime added
         });
