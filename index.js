@@ -84,7 +84,19 @@ client.on('message', async (message) => {
       const workRating = Array.from(workRatingList).map((e) => e.children[0].data.toString()).join(', ');
       //! Move the following log/send down to successful add so it doesn't send on duplicate.
       console.log(`${workTitle} by ${workAuthor}${workAuthorURL}\nWords: ${wordCount}\nRating: ${workRating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
-      message.channel.send(`**${workTitle}** by *${workAuthor}* <https://archiveofourown.org${workAuthorURL}>\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${workRating}\n**Warnings:** ${workWarnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
+      //! Need to make this async. It's failing on longfic.
+      const embed = new Discord.MessageEmbed()
+        .setDescription(`\u200b**[${workTitle}](https://archiveofourown.org/works/${workID})** by *${workAuthor}*`)
+        .addFields(
+          { name: '**Word Count**', value: `\u200b${wordCount}`, inline: true },
+          { name: '**Rating**', value: `\u200b${workRating}`, inline: true },
+          { name: '**Warnings**', value: `\u200b${workWarnings}`, inline: true },
+          { name: '**Tags**', value: `\u200b${freeformTags}`, inline: false },
+          { name: '**Summary**', value: `\u200b${workSummary}`, inline: false },
+        )
+        .setFooter(`Recommended by ${message.author.username}. All recs are curated from the #fic-recs channel.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
+      message.channel.send({ embed });
+      // message.channel.send(`**${workTitle}** by *${workAuthor}* <https://archiveofourown.org${workAuthorURL}>\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${workRating}\n**Warnings:** ${workWarnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
       //
 
       try {
