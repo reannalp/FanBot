@@ -15,7 +15,7 @@ module.exports = {
         { name: '**Creator Roles**', value: '<@&387344772114939904>\n<@&387344715588173824>\n<@&522626815420923904>', inline: true },
         { name: '**Section Roles**', value: '<@&387345102722564107>\n<@&387344950897147906>\n<@&387345183982878731>\n<@&387345238236069889>', inline: true },
         { name: '**Notification Roles**', value: '<@&387344863689179138>\n<@&413161569774600202>\n<@&522626942038573067>', inline: true },
-        { name: '**Informational Roles**', value: '**Pronouns:** <@&387345249506426890>, <@&387345779729104897>, <@&387345820305063945>\n**Timezones:** <@&419399621442273280>, <@&419399684600102930>, <@&419399739092762633>, <@&426882602729865216>, <@&419399949772521488>, etc.\nVisit the [wiki](https://profoundnet.fandom.com/wiki/Roles) for the full list. Please let a mod know if your pronouns or timezone aren\'t available.' },
+        { name: '**Informational Roles**', value: '**Pronouns:** <@&387345249506426890>, <@&387345779729104897>, <@&387345820305063945>, <@&724445800662302780>, etc.\n**Timezones:** <@&419399621442273280>, <@&419399684600102930>, <@&419399739092762633>, <@&426882602729865216>, <@&419399949772521488>, etc.\nVisit the [wiki](https://profoundnet.fandom.com/wiki/Roles) for the full list. Please let a mod know if your pronouns or timezone aren\'t available.' },
       );
     message.channel.send({ embed });
     message.delete();

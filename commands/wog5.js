@@ -11,8 +11,8 @@ module.exports = {
       .setAuthor('Mod Roster', 'https://66.media.tumblr.com/97a867a682e2849b20bb3f133cad24ff/tumblr_pan6axySOy1rlt8b4o2_250.jpg', 'https://profoundnet.fandom.com/wiki/Mods')
       .addFields(
         { name: '**Server Owner**', value: '<@&393904792470159368>, Cryptomoon' },
-        { name: '**Admins**', value: '<@&397970442176167967>, Hartless, JJ, Migglangelus' },
-        { name: '**Mods**', value: '<@&418842471708229633>, Aleeliah, Jess [thatpeculiarone], Kazshero, saltnhalo (Emma), Sunny, LeafZelindor, TobytheWise' },
+        { name: '**Admins**', value: '<@&397970442176167967>, Hartless, JJ, Migglangelus, Kazshero' },
+        { name: '**Mods**', value: '<@&418842471708229633>, Aleeliah, Jess [thatpeculiarone], saltnhalo (Emma), Sunny, LeafZelindor, TobytheWise, Jemariel, PallasPerilous' },
       );
     message.channel.send({ embed });
     message.delete();
