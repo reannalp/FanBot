@@ -6,4 +6,9 @@ module.exports = (client, reaction, user) => {
       .then(reaction.message.channel.send(`Added ${addRole.toString()} role to ${user.username}`))
       .catch(console.error);
   }
+  if (!user.bot && reaction.message.id === '735958329884672042') {
+    const addRole = reaction.message.guild.roles.cache.find((cb) => cb.name === 'Member Agreement Accepted');
+    if (!addRole) console.log('error, doesnt exist');
+    reaction.message.guild.members.cache.get(user.id).roles.add(addRole);
+  }
 };
