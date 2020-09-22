@@ -22,6 +22,8 @@ fs.readdir('./events/', (err, files) => {
   });
 });
 
+// Add rec by workID OR URL, accounting for superfluous chapter URL. Send confirmation that it added, delete confirmation after a min.
+
 const sequelize = new Sequelize('database', 'user', 'password', {
   host: 'localhost',
   dialect: 'sqlite',
