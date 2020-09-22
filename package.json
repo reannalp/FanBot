@@ -22,7 +22,7 @@
     "cheerio": "^1.0.0-rc.3",
     "discord.js": "^12.0.2",
     "sequelize": "^5.21.6",
-    "sqlite3": "^4.1.1"
+    "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
