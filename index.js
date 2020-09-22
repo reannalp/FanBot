@@ -113,6 +113,7 @@ client.on('message', async (message) => {
           summary: workSummary,
           // comments: comments/tags,
           //! Need to figure out accepting two arguments. WorkID and Comments and throw errors properly for both.
+          // -- Do I even want to include comments??
           freeformtags: freeformTags,
           recby: message.author.id,
           // recdate: datetime added
@@ -121,6 +122,7 @@ client.on('message', async (message) => {
       } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') {
           return message.reply('That fic has already been recommended.');
+          // then delete this message and the rec
         }
         return message.reply('Something went wrong with adding this rec.');
       }
@@ -129,7 +131,20 @@ client.on('message', async (message) => {
       const workID = commandArgs;
       const rec = await Recs.findOne({ where: { workid: workID } });
       if (rec) {
-        return message.channel.send(`https://archiveofourown.org/works/${rec.get('workid')} was recommended by ${rec.recby} on DATE`);
+        // return message.channel.send(`https://archiveofourown.org/works/${rec.get('workid')} was recommended by ${rec.recby} on DATE`);
+        const rb = client.users.fetch(rec.get('recby'));
+        const embed = new Discord.MessageEmbed()
+          .setDescription(`\u200b**[${rec.get('title')}](https://archiveofourown.org/works/${workID})** by *${rec.get('author')}*`)
+          .addFields(
+            { name: '**Word Count**', value: `\u200b${rec.get('wordcount')}`, inline: true },
+            { name: '**Rating**', value: `\u200b${rec.get('rating')}`, inline: true },
+            { name: '**Warnings**', value: `\u200b${rec.get('warnings')}`, inline: true },
+            { name: '**Tags**', value: `\u200b${rec.get('freeformtags')}`, inline: false },
+            { name: '**Summary**', value: `\u200b${rec.get('summary')}`, inline: false },
+          )
+          .setFooter(`Recommended by ${(await rb).username}. All recs are curated from the #fic-recs channel.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
+        message.channel.send({ embed });
+        return;
       }
       return message.reply(`Could not find rec: ${workID}`); // change to randomization
     } else if (command === 'updaterec') {
