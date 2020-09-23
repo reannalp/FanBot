@@ -70,7 +70,7 @@ client.on('message', async (message) => {
       const axios = require('axios');
       const cheerio = require('cheerio');
       const fetchData = async () => {
-        const result = await axios.get(`https://archiveofourown.org/works/${workID}`);
+        const result = await axios.get(`https://archiveofourown.org/works/${workID}?view_adult=true`);
         return cheerio.load(result.data);
       };
       const $ = await fetchData();
@@ -100,8 +100,6 @@ client.on('message', async (message) => {
         )
         .setFooter(`Recommended by ${message.author.username} on ${recDate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
       message.channel.send({ embed });
-      // message.channel.send(`**${workTitle}** by *${workAuthor}* <https://archiveofourown.org${workAuthorURL}>\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${workRating}\n**Warnings:** ${workWarnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
-      //
 
       try {
         const rec = await Recs.create({
@@ -158,7 +156,7 @@ client.on('message', async (message) => {
       const axios = require('axios');
       const cheerio = require('cheerio');
       const fetchData = async () => {
-        const result = await axios.get(`https://archiveofourown.org/works/${workID}`);
+        const result = await axios.get(`https://archiveofourown.org/works/${workID}?view_adult=true`);
         return cheerio.load(result.data);
       };
       const $ = await fetchData();
