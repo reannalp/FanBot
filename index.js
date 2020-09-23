@@ -64,7 +64,7 @@ client.on('message', async (message) => {
     if (command === 'addrec') {
       const splitArgs = commandArgs.split(' ');
       const workID = splitArgs.shift();
-      const recsent = new Date(message.createdTimestamp);
+      const recSent = new Date(message.createdTimestamp);
 
       // fetch
       const axios = require('axios');
@@ -85,6 +85,7 @@ client.on('message', async (message) => {
       const workWarnings = Array.from(workWarningsList).map((e) => e.children[0].data.toString()).join(', ');
       const workRatingList = $('.rating > .commas').contents().children();
       const workRating = Array.from(workRatingList).map((e) => e.children[0].data.toString()).join(', ');
+      const recDate = recSent.toDateString();
       //! Move the following log/send down to successful add so it doesn't send on duplicate.
       console.log(`${workTitle} by ${workAuthor}${workAuthorURL}\nWords: ${wordCount}\nRating: ${workRating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
       //! Need to make this async. It's failing on longfic.
@@ -97,7 +98,7 @@ client.on('message', async (message) => {
           { name: '**Tags**', value: `\u200b${freeformTags}`, inline: false },
           { name: '**Summary**', value: `\u200b${workSummary}`, inline: false },
         )
-        .setFooter(`Recommended by ${message.author.username} on ${recsent.toDateString()}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
+        .setFooter(`Recommended by ${message.author.username} on ${recDate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
       message.channel.send({ embed });
       // message.channel.send(`**${workTitle}** by *${workAuthor}* <https://archiveofourown.org${workAuthorURL}>\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${workRating}\n**Warnings:** ${workWarnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
       //
@@ -117,6 +118,7 @@ client.on('message', async (message) => {
           // -- Do I even want to include comments??
           freeformtags: freeformTags,
           recby: message.author.id,
+          recdate: recDate,
         });
         return message.reply(`https://archiveofourown.org/works/${workID} added.`);
       } catch (e) {
