@@ -74,7 +74,7 @@ client.on('message', async (message) => {
         return cheerio.load(result.data);
       };
       const $ = await fetchData();
-      const workTitle = $('.preface > .title').text().trim();
+      const workTitle = $('.preface > .title.heading').text().trim();
       const workAuthor = $('.preface > .byline').text().trim();
       const workAuthorURL = $('.byline > a').attr('href');
       const wordCount = $('.stats > dd.words').text().trim();
@@ -90,13 +90,13 @@ client.on('message', async (message) => {
       console.log(`${workTitle} by ${workAuthor}${workAuthorURL}\nWords: ${wordCount}\nRating: ${workRating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
       //! Need to make this async. It's failing on longfic.
       const embed = new Discord.MessageEmbed()
-        .setDescription(`\u200b**[${workTitle}](https://archiveofourown.org/works/${workID})** by *${workAuthor}*`)
+        .setDescription(`\u200b**[${workTitle}](https://archiveofourown.org/works/${workID})** by *[${workAuthor}](https://archiveofourown${workAuthorURL})*`)
         .addFields(
-          { name: '**Word Count**', value: `\u200b${wordCount}`, inline: true },
-          { name: '**Rating**', value: `\u200b${workRating}`, inline: true },
-          { name: '**Warnings**', value: `\u200b${workWarnings}`, inline: true },
-          { name: '**Tags**', value: `\u200b${freeformTags}`, inline: false },
-          { name: '**Summary**', value: `\u200b${workSummary}`, inline: false },
+          { name: 'Word Count', value: `\u200b${wordCount}`, inline: true },
+          { name: 'Rating', value: `\u200b${workRating}`, inline: true },
+          { name: 'Warnings', value: `\u200b${workWarnings}`, inline: true },
+          { name: 'Tags', value: `\u200b${freeformTags}`, inline: false },
+          { name: 'Summary', value: `\u200b${workSummary}`, inline: false },
         )
         .setFooter(`Recommended by ${message.author.username} on ${recDate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
       message.channel.send({ embed });
@@ -120,11 +120,12 @@ client.on('message', async (message) => {
           recby: message.author.id,
           recdate: recDate,
         });
-        return message.reply(`https://archiveofourown.org/works/${workID} added.`);
+        return message.reply(`${workTitle} by ${workAuthor} added.`);
       } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') {
-          return message.reply('That fic has already been recommended.');
-          // then delete this message and the rec
+          return message.reply('That fic has already been recommended.')
+            .then((msg) => msg.delete({ timeout: 5000 }));
+          // then delete the rec too somehow??
         }
         return message.reply('Something went wrong with adding this rec.');
       }
@@ -133,16 +134,15 @@ client.on('message', async (message) => {
       const workID = commandArgs;
       const rec = await Recs.findOne({ where: { workid: workID } });
       if (rec) {
-        // return message.channel.send(`https://archiveofourown.org/works/${rec.get('workid')} was recommended by ${rec.recby} on DATE`);
         const rb = client.users.fetch(rec.get('recby'));
         const embed = new Discord.MessageEmbed()
-          .setDescription(`\u200b**[${rec.get('title')}](https://archiveofourown.org/works/${workID})** by *${rec.get('author')}*`)
+          .setDescription(`\u200b**[${rec.get('title')}](https://archiveofourown.org/works/${workID})** by *[${rec.get('author')}](https://archiveofourown.org${rec.get('authorURL')})*`)
           .addFields(
-            { name: '**Word Count**', value: `\u200b${rec.get('wordcount')}`, inline: true },
-            { name: '**Rating**', value: `\u200b${rec.get('rating')}`, inline: true },
-            { name: '**Warnings**', value: `\u200b${rec.get('warnings')}`, inline: true },
-            { name: '**Tags**', value: `\u200b${rec.get('freeformtags')}`, inline: false },
-            { name: '**Summary**', value: `\u200b${rec.get('summary')}`, inline: false },
+            { name: 'Word Count', value: `\u200b${rec.get('wordcount')}`, inline: true },
+            { name: 'Rating', value: `\u200b${rec.get('rating')}`, inline: true },
+            { name: 'Warnings', value: `\u200b${rec.get('warnings')}`, inline: true },
+            { name: 'Tags', value: `\u200b${rec.get('freeformtags')}`, inline: false },
+            { name: 'Summary', value: `\u200b${rec.get('summary')}`, inline: false },
           )
           .setFooter(`Recommended by ${(await rb).username}, ${rec.recdate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
         message.channel.send({ embed });
