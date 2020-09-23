@@ -48,7 +48,7 @@ const Recs = sequelize.define('recs', {
   summary: Sequelize.TEXT,
   comments: Sequelize.TEXT,
   recby: Sequelize.STRING,
-  recdate: Sequelize.DATE,
+  recdate: Sequelize.STRING,
 });
 
 client.once('ready', () => {
@@ -64,6 +64,7 @@ client.on('message', async (message) => {
     if (command === 'addrec') {
       const splitArgs = commandArgs.split(' ');
       const workID = splitArgs.shift();
+      const recsent = new Date(message.createdTimestamp);
 
       // fetch
       const axios = require('axios');
@@ -96,7 +97,7 @@ client.on('message', async (message) => {
           { name: '**Tags**', value: `\u200b${freeformTags}`, inline: false },
           { name: '**Summary**', value: `\u200b${workSummary}`, inline: false },
         )
-        .setFooter(`Recommended by ${message.author.username}. All recs are curated from the #fic-recs channel.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
+        .setFooter(`Recommended by ${message.author.username} on ${recsent.toDateString()}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
       message.channel.send({ embed });
       // message.channel.send(`**${workTitle}** by *${workAuthor}* <https://archiveofourown.org${workAuthorURL}>\n<https://archiveofourown.org/works/${workID}>\n**Words:** ${wordCount}\n**Rating:** ${workRating}\n**Warnings:** ${workWarnings}\n**Tags:** ${freeformTags}\n**Summary:** ${workSummary}\n**Rec Comments:**`);
       //
@@ -116,7 +117,6 @@ client.on('message', async (message) => {
           // -- Do I even want to include comments??
           freeformtags: freeformTags,
           recby: message.author.id,
-          // recdate: datetime added
         });
         return message.reply(`https://archiveofourown.org/works/${workID} added.`);
       } catch (e) {
@@ -142,7 +142,7 @@ client.on('message', async (message) => {
             { name: '**Tags**', value: `\u200b${rec.get('freeformtags')}`, inline: false },
             { name: '**Summary**', value: `\u200b${rec.get('summary')}`, inline: false },
           )
-          .setFooter(`Recommended by ${(await rb).username}. All recs are curated from the #fic-recs channel.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
+          .setFooter(`Recommended by ${(await rb).username}, ${rec.recdate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
         message.channel.send({ embed });
         return;
       }
