@@ -70,7 +70,7 @@ client.on('message', async (message) => {
       const axios = require('axios');
       const cheerio = require('cheerio');
       const fetchData = async () => {
-        const result = await axios.get(`https://archiveofourown.org/works/${workID}?view_adult=true`);
+        const result = await axios.get(`https://archiveofourown.org/works/${workID}?view_adult=true&view_full_work=true`);
         return cheerio.load(result.data);
       };
       const $ = await fetchData();
@@ -78,7 +78,7 @@ client.on('message', async (message) => {
       const workAuthor = $('.preface > .byline').text().trim();
       const workAuthorURL = $('.byline > a').attr('href');
       const wordCount = $('.stats > dd.words').text().trim();
-      const workSummary = $('.summary > .userstuff').text().trim();
+      const workSummary = $('.summary > .userstuff').first().text().trim();
       const trimmedSummary = workSummary.length > 800 ? `${workSummary.substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : workSummary;
       const freeformTagsList = $('.freeform > .commas').contents().children();
       const freeformTags = Array.from(freeformTagsList).map((e) => e.children[0].data.toString()).join(', ');
@@ -160,7 +160,7 @@ client.on('message', async (message) => {
       const axios = require('axios');
       const cheerio = require('cheerio');
       const fetchData = async () => {
-        const result = await axios.get(`https://archiveofourown.org/works/${workID}?view_adult=true`);
+        const result = await axios.get(`https://archiveofourown.org/works/${workID}?view_adult=true&view_full_work=true`);
         return cheerio.load(result.data);
       };
       const $ = await fetchData();
