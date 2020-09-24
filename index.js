@@ -22,7 +22,7 @@ fs.readdir('./events/', (err, files) => {
   });
 });
 
-// Add rec by workID OR URL, accounting for superfluous chapter URL. Send confirmation that it added, delete confirmation after a min.
+// Add rec by workID OR URL.
 
 const sequelize = new Sequelize('database', 'user', 'password', {
   host: 'localhost',
@@ -88,19 +88,19 @@ client.on('message', async (message) => {
       const workRatingList = $('.rating > .commas').contents().children();
       const workRating = Array.from(workRatingList).map((e) => e.children[0].data.toString()).join(', ');
       const recDate = recSent.toDateString();
-      //! Move the following log/send down to successful add so it doesn't send on duplicate.
+
       const embed = new Discord.MessageEmbed()
         .setColor('#970000')
+        .setThumbnail('http://www.userlogos.org/files/logos/mfrog/AO3logo3-02.png')
         .setDescription(`\u200b**[${workTitle}](https://archiveofourown.org/works/${workID})** by *[${workAuthor}](https://archiveofourown${workAuthorURL})*`)
         .addFields(
-          { name: 'Word Count', value: `\u200b${wordCount}`, inline: true },
+          { name: 'Word Count', value: `\u200b${wordCount.toLocaleString()}`, inline: true },
           { name: 'Rating', value: `\u200b${workRating}`, inline: true },
-          { name: 'Warnings', value: `\u200b${workWarnings}`, inline: true },
+          { name: 'Warnings', value: `\u200b${workWarnings}`, inline: false },
           { name: 'Tags', value: `\u200b${trimmedTags}`, inline: false },
           { name: 'Summary', value: `\u200b${trimmedSummary}`, inline: false },
         )
         .setFooter(`Recommended by ${message.author.username} on ${recDate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
-      // message.channel.send({ embed });
 
       try {
         const rec = await Recs.create({
@@ -112,9 +112,7 @@ client.on('message', async (message) => {
           warnings: workWarnings,
           rating: workRating,
           summary: workSummary,
-          // comments: comments/tags,
-          //! Need to figure out accepting two arguments. WorkID and Comments and throw errors properly for both.
-          // -- Do I even want to include comments??
+          // comments: comments argument???? Probably not
           freeformtags: freeformTags,
           recby: message.author.id,
           recdate: recDate,
@@ -128,7 +126,7 @@ client.on('message', async (message) => {
         return message.reply('Something went wrong with adding this rec.');
       }
     } else if (command === 'rec') {
-      //! pull randomized rec IF no argument, pull specific rec IF workID or Title, give usage if other arg
+      //! pull randomized rec IF no argument, pull specific rec IF workID or URL, give usage if other arg
       const workID = commandArgs;
       const rec = await Recs.findOne({ where: { workid: workID } });
       if (rec) {
@@ -137,11 +135,12 @@ client.on('message', async (message) => {
         const trimmedTags = rec.get('freeformtags').length > 800 ? `${rec.get('freeformtags').substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : rec.get('freeformtags');
         const embed = new Discord.MessageEmbed()
           .setColor('#970000')
+          .setThumbnail('http://www.userlogos.org/files/logos/mfrog/AO3logo3-02.png')
           .setDescription(`\u200b**[${rec.get('title')}](https://archiveofourown.org/works/${workID})** by *[${rec.get('author')}](https://archiveofourown.org${rec.get('authorURL')})*`)
           .addFields(
-            { name: 'Word Count', value: `\u200b${rec.get('wordcount')}`, inline: true },
+            { name: 'Word Count', value: `\u200b${rec.get('wordcount').toLocaleString()}`, inline: true },
             { name: 'Rating', value: `\u200b${rec.get('rating')}`, inline: true },
-            { name: 'Warnings', value: `\u200b${rec.get('warnings')}`, inline: true },
+            { name: 'Warnings', value: `\u200b${rec.get('warnings')}`, inline: false },
             { name: 'Tags', value: `\u200b${trimmedTags}`, inline: false },
             { name: 'Summary', value: `\u200b${trimmedSummary}`, inline: false },
           )
@@ -149,7 +148,7 @@ client.on('message', async (message) => {
         message.channel.send({ embed });
         return;
       }
-      return message.reply(`Could not find rec: ${workID}`); // change to randomization
+      return message.reply(`Could not find rec: ${workID}`); // change to updaterec if entry exists, randomize if no argument, usage if garbage argument
     } else if (command === 'updaterec') {
       //! updates/edits info of specific rec by workID
       const splitArgs = commandArgs.split(' ');
@@ -163,7 +162,7 @@ client.on('message', async (message) => {
         return cheerio.load(result.data);
       };
       const $ = await fetchData();
-      const workTitle = $('.preface > .title').text().trim();
+      const workTitle = $('.preface > .title.heading').text().trim();
       const workAuthor = $('.preface > .byline').text().trim();
       const wordCount = $('.stats > dd.words').text().trim();
       const workSummary = $('.summary > .userstuff').text().trim();
@@ -175,7 +174,7 @@ client.on('message', async (message) => {
       if (affectedRows > 0) {
         return message.reply(`Rec ${workID} was updated.`);
       }
-      return message.reply(`Could not find a rec with ID ${workID}.`);
+      return message.reply(`Could not find a rec with ID ${workID}.`); // addrec then or give usage if garbage
     } else if (command === 'removerec') {
       // delete specfic rec by workID
       const workID = commandArgs;
