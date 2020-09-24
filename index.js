@@ -89,9 +89,8 @@ client.on('message', async (message) => {
       const workRating = Array.from(workRatingList).map((e) => e.children[0].data.toString()).join(', ');
       const recDate = recSent.toDateString();
       //! Move the following log/send down to successful add so it doesn't send on duplicate.
-      console.log(`${workTitle} by ${workAuthor}${workAuthorURL}\nWords: ${wordCount}\nRating: ${workRating}\n Summary: ${workSummary}\nTags: ${freeformTags}`);
-      //! Need to make this async. It's failing on longfic.
       const embed = new Discord.MessageEmbed()
+        .setColor('#970000')
         .setDescription(`\u200b**[${workTitle}](https://archiveofourown.org/works/${workID})** by *[${workAuthor}](https://archiveofourown${workAuthorURL})*`)
         .addFields(
           { name: 'Word Count', value: `\u200b${wordCount}`, inline: true },
@@ -138,6 +137,7 @@ client.on('message', async (message) => {
         const trimmedSummary = rec.get('summary').length > 800 ? `${rec.get('summary').substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : rec.get('summary');
         const trimmedTags = rec.get('freeformtags').length > 800 ? `${rec.get('freeformtags').substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : rec.get('freeformtags');
         const embed = new Discord.MessageEmbed()
+          .setColor('#970000')
           .setDescription(`\u200b**[${rec.get('title')}](https://archiveofourown.org/works/${workID})** by *[${rec.get('author')}](https://archiveofourown.org${rec.get('authorURL')})*`)
           .addFields(
             { name: 'Word Count', value: `\u200b${rec.get('wordcount')}`, inline: true },
