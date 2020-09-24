@@ -135,14 +135,16 @@ client.on('message', async (message) => {
       const rec = await Recs.findOne({ where: { workid: workID } });
       if (rec) {
         const rb = client.users.fetch(rec.get('recby'));
+        const trimmedSummary = rec.get('summary').length > 800 ? `${rec.get('summary').substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : rec.get('summary');
+        const trimmedTags = rec.get('freeformtags').length > 800 ? `${rec.get('freeformtags').substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : rec.get('freeformtags');
         const embed = new Discord.MessageEmbed()
           .setDescription(`\u200b**[${rec.get('title')}](https://archiveofourown.org/works/${workID})** by *[${rec.get('author')}](https://archiveofourown.org${rec.get('authorURL')})*`)
           .addFields(
             { name: 'Word Count', value: `\u200b${rec.get('wordcount')}`, inline: true },
             { name: 'Rating', value: `\u200b${rec.get('rating')}`, inline: true },
             { name: 'Warnings', value: `\u200b${rec.get('warnings')}`, inline: true },
-            { name: 'Tags', value: `\u200b${rec.get('freeformtags')}`, inline: false },
-            { name: 'Summary', value: `\u200b${rec.get('summary')}`, inline: false },
+            { name: 'Tags', value: `\u200b${trimmedTags}`, inline: false },
+            { name: 'Summary', value: `\u200b${trimmedSummary}`, inline: false },
           )
           .setFooter(`Recommended by ${(await rb).username}, ${rec.recdate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
         message.channel.send({ embed });
