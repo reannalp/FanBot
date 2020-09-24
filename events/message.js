@@ -11,7 +11,7 @@ module.exports = (client, message) => {
   //
 
   // blacklist
-  const blacklist = ['nigg?(er|a)', '(fuck|lib|re)?tard(ed)?', 'gyp(po|sy)?', 'tranny', 'fag(got)?'];
+  const blacklist = ['^nigg?(er|a)$', '^(fuck|lib|re)?tard(ed)?$', '^gyp(po|sy)?$', '^tranny$', '^fag(got)?$'];
   const blacklisted = blacklist.filter((word) => message.content.toLowerCase().match(word));
   if (!message.author.bot && blacklisted.length > 0) {
     const embed = new Discord.MessageEmbed()
