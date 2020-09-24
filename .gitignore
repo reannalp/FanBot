@@ -3,4 +3,5 @@
 node_modules
 database.sqlite
 commands/wog*.js
+assets/
 config.json
