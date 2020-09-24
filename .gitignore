@@ -2,11 +2,5 @@
 .vscode/settings.json
 node_modules
 database.sqlite
-wog1.js
-wog2.js
-wog3.js
-wog4.js
-wog5.js
-wog6.js
-wog7.js
+commands/wog*.js
 config.json
