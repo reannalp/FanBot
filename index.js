@@ -79,8 +79,10 @@ client.on('message', async (message) => {
       const workAuthorURL = $('.byline > a').attr('href');
       const wordCount = $('.stats > dd.words').text().trim();
       const workSummary = $('.summary > .userstuff').text().trim();
+      const trimmedSummary = workSummary.length > 800 ? `${workSummary.substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : workSummary;
       const freeformTagsList = $('.freeform > .commas').contents().children();
       const freeformTags = Array.from(freeformTagsList).map((e) => e.children[0].data.toString()).join(', ');
+      const trimmedTags = freeformTags.length > 800 ? `${freeformTags.substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : freeformTags;
       const workWarningsList = $('.warning > .commas').contents().children();
       const workWarnings = Array.from(workWarningsList).map((e) => e.children[0].data.toString()).join(', ');
       const workRatingList = $('.rating > .commas').contents().children();
@@ -95,8 +97,8 @@ client.on('message', async (message) => {
           { name: 'Word Count', value: `\u200b${wordCount}`, inline: true },
           { name: 'Rating', value: `\u200b${workRating}`, inline: true },
           { name: 'Warnings', value: `\u200b${workWarnings}`, inline: true },
-          { name: 'Tags', value: `\u200b${freeformTags}`, inline: false },
-          { name: 'Summary', value: `\u200b${workSummary}`, inline: false },
+          { name: 'Tags', value: `\u200b${trimmedTags}`, inline: false },
+          { name: 'Summary', value: `\u200b${trimmedSummary}`, inline: false },
         )
         .setFooter(`Recommended by ${message.author.username} on ${recDate}.`, 'https://images-ext-1.discordapp.net/external/YlQNt-XbFK952sJEvUsXB7FgU4Urjj9JcpFZeAQMKyw/https/images-ext-2.discordapp.net/external/TAHw2BUvSlB7GzuU4YnZBI9w4vInaI-2OonKfGze000/https/cdn.discordapp.com/emojis/388209945343950858.png');
       message.channel.send({ embed });
