@@ -1,5 +1,4 @@
 const Discord = require('discord.js');
-const Sequelize = require('sequelize');
 const { prefix } = require('../config.json');
 
 const cooldowns = new Discord.Collection();
