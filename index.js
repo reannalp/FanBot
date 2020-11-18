@@ -75,8 +75,11 @@ client.on('message', async (message) => {
       };
       const $ = await fetchData();
       const workTitle = $('.preface > .title.heading').text().trim();
-      const workAuthor = $('.preface > .byline').text().trim();
+      const workAuthor = $('.preface > .byline > a').first().text().trim();
+      const coAuthors = Array.from($('.preface > .byline > a').nextAll()).map((e) => e.children[0].data.toString()).join(', ');
       const workAuthorURL = $('.byline > a').attr('href');
+      // coauthor urls here, also really need the authors to go into their own table. :/
+      // need to put coauthors in embed and handle coauthors being empty
       const wordCount = $('.stats > dd.words').text().trim();
       const workSummary = $('.summary > .userstuff').first().text().trim();
       const trimmedSummary = workSummary.length > 800 ? `${workSummary.substring(0, 900 - 21)}... [read more](https://archiveofourown.org/works/${workID})` : workSummary;
